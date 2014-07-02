@@ -44,8 +44,10 @@ enum box {
   #endif
   #if MAG
     BOXMAG,
-    BOXHEADFREE,
-    BOXHEADADJ, // acquire heading for HEADFREE mode
+    #if defined(HEADFREE)
+      BOXHEADFREE,
+      BOXHEADADJ, // acquire heading for HEADFREE mode
+    #endif
   #endif
   #if defined(SERVO_TILT) || defined(GIMBAL)  || defined(SERVO_MIX_TILT)
     BOXCAMSTAB,
@@ -94,7 +96,8 @@ typedef struct {
   uint8_t  vbat;               // battery voltage in 0.1V steps
   uint16_t intPowerMeterSum;
   uint16_t rssi;              // range: [0;1023]
-  uint16_t amperage;
+  uint16_t amperage;          // 1unit == 100mA
+  uint16_t watts;             // 1unit == 1W
 } analog_t;
 
 typedef struct {
