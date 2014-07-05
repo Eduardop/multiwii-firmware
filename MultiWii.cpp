@@ -768,6 +768,24 @@ void go_disarm() {
   }
 }
 
+#define TRANSMITTER_CENTER 1516
+// 9 / 7 = 1.286
+#define TRANSMITTER_MULT 9
+#define TRANSMITTER_DIV 7
+
+void increaseTransmitterRange() {
+  for (int i = 0; i < RC_CHANS; i++) {
+    if (rcData[i] > 900) {
+      int32_t rcData32 = rcData[i];
+      rcData32 = (((rcData32 - TRANSMITTER_CENTER)
+        * TRANSMITTER_MULT) / TRANSMITTER_DIV) + 1500;
+      rcData32 = rcData32 > 2000 ? 2000 :
+        rcData32 < 1000 ? 1000 : rcData32;
+      rcData[i] = rcData32;
+    }
+  }
+}
+
 // ******** Main Loop *********
 void loop () {
   static uint8_t rcDelayCommand; // this indicates the number of time (multiple of RC measurement at 50Hz) the sticks must be maintained to run or switch off motors
@@ -814,6 +832,9 @@ void loop () {
   #endif
     rcTime = currentTime + 20000;
     computeRC();
+
+    increaseTransmitterRange();
+
     // Failsafe routine - added by MIS
     #if defined(FAILSAFE)
       if ( failsafeCnt > (5*FAILSAFE_DELAY) && f.ARMED) {                  // Stabilize, and set Throttle to specified level
