@@ -868,7 +868,7 @@ void loop () {
     rcTime = currentTime + 20000;
     computeRC();
 
-    fixAeroskyTransmitter();
+    //fixAeroskyTransmitter();
 
     // Failsafe routine - added by MIS
     #if defined(FAILSAFE)
